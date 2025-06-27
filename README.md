@@ -1,70 +1,84 @@
-# 📄 Automatización de Fichas 2.1 y 2.2 (Word) desde Excel
 
-Desarrollado por **Eduard Peñas Balart (UPC - ESEIAAT)**  
-Colabora con: **7 Experts**
+# 🧾 Generador automático de fichas Word desde Excel
 
----
-
-## 🧠 ¿Qué hace este cuaderno?
-
-Este cuaderno de **Google Colab** permite generar de forma automática las fichas de ampliación **2.1 (Personal)** y **2.2 (Entidades y Facturas)** a partir de **archivos Excel**. Estas fichas se exportan en formato Word (.docx) listas para presentar.
+Este proyecto genera automáticamente un documento Word combinando plantillas `.docx` con datos de personal contenidos en un archivo Excel (`Excel_Personal_2.1.xlsx`). Es útil para informes técnicos, certificaciones y memorias justificativas de proyectos de I+D.
 
 ---
 
-## 📝 ¿Qué fichas se generan?
+## 📁 Estructura del proyecto
 
-- **Ficha 2.1 (Personal)**:  
-  Se genera a partir de un único archivo Excel con la información de las personas involucradas en el proyecto (nombre, apellidos, puesto, horas trabajadas, etc.).
-
-- **Ficha 2.2 (Entidades y Facturas)**:  
-  Se genera combinando dos archivos Excel:  
-  - Uno con información sobre las **entidades colaboradoras**  
-  - Otro con las **facturas** asociadas a cada entidad
-
----
-
-## 📁 Archivos necesarios
-
-Antes de ejecutar el cuaderno, asegúrate de tener en tu Google Drive los siguientes archivos con estos nombres exactos:
-
-- `Excel_Personal_2.1.xlsx`
-- `Excel_Colaboraciones_2.2.xlsx`
-- `Excel_Facturas_2.2.xlsx`
-- `2.1.docx` *(Plantilla Word de la ficha 2.1)*
-- `2.2.docx` *(Plantilla Word de la ficha 2.2)*
-- `archivo.png`, `Captura1.png`, `Captura2.png` *(Imágenes ilustrativas del proceso)*
+```
+📦 proyecto/
+├── 📄 script.py
+├── 📄 funciones.py
+├── 📄 Excel_Personal_2.1.xlsx
+├── 📄 plantilla_base.docx
+├── 📄 Ficha_Ampliacion_Aptdo_2_1_nombre_cliente.docx
+└── 📂 output/
+```
 
 ---
 
-## ✅ ¿Cómo usar el cuaderno?
+## 🛠 Requisitos
 
-1. **Abre el cuaderno en Google Colab**
-2. **Ejecuta la primera celda** para instalar dependencias y montar Google Drive.
-3. **Sube los archivos Excel y las plantillas Word** a tu Google Drive.
-4. **Sigue los pasos numerados en el cuaderno** para generar las fichas automáticamente.
-5. **Descarga el archivo Word resultante** desde `/tmp/` o desde el botón de descarga que se generará al final.
+- Python 3.8 o superior
+- Google Colab (opcional)
+- Librerías necesarias:
 
----
-
-## 🧪 Requisitos técnicos
-
-- Tener acceso a [Google Colab](https://colab.research.google.com/)
-- Conexión con Google Drive
-- Archivos Excel rellenados según la plantilla (incluida en el cuaderno)
-- Las plantillas `.docx` base deben estar correctamente nombradas y disponibles
+```bash
+pip install pandas openpyxl python-docx
+```
 
 ---
 
-## 📷 Vista previa
+## 🔧 Cómo ejecutar el script
 
-El cuaderno incluye capturas para facilitar la comprensión del proceso paso a paso. También se detallan ejemplos de cómo deben estar rellenadas las tablas Excel.
-
----
-
-## 💬 Comentarios y soporte
-
-Si tienes sugerencias o detectas errores, no dudes en contactar con el autor o contribuir al repositorio.
+1. Asegúrate de que el archivo `Excel_Personal_2.1.xlsx` esté en el mismo directorio o en la ruta indicada.
+2. Asegúrate de tener cargada la plantilla Word llamada `2.1.docx` o similar.
+3. Ejecuta el script `script.py`, ya sea en local o en Google Colab.
+4. Se generará automáticamente el documento Word con todas las fichas combinadas.
 
 ---
 
-> Este proyecto tiene fines educativos y administrativos. Uso bajo responsabilidad del usuario.
+## 📌 Notas importantes
+
+- Las fechas se formatean automáticamente en el estilo `dd/mm/yyyy`.
+- Los valores numéricos en euros se formatean con punto de miles y coma decimal: `1.234,56 €`.
+- El campo **Coste horario** muestra el símbolo `€/h` en lugar de `€` para mayor claridad.
+- La sección de **"Actividad 3"** se rellena únicamente si hay contenido en las celdas correspondientes.
+- Puedes subir tu Excel a Google Drive y montar temporalmente tu unidad si trabajas desde Google Colab.
+
+---
+
+## ☁️ Cómo usarlo como backend en una plataforma
+
+- Extrae la función principal de generación de fichas a un archivo como `generar_fichas.py`.
+- Usa la librería `tempfile` para guardar los archivos `.docx` de forma temporal.
+- Asegúrate de que el frontend envíe correctamente el archivo `.xlsx`.
+- Devuelve el archivo generado en bytes o como descarga desde el backend.
+- Usa frameworks como **Flask** o **FastAPI** para hacer accesible el servicio desde HTTP.
+
+---
+
+## 📤 Compartir el proyecto
+
+Para subirlo a GitHub:
+
+1. Crea un repositorio con `git init`.
+2. Añade el archivo `README.md` con estas instrucciones.
+3. Sube todos los archivos relevantes, excepto ficheros temporales.
+
+---
+
+## 👨‍💻 Indicaciones para otros programadores
+
+- El script debe ejecutarse con un archivo Excel estructurado según el modelo (Nombre, Apellidos, Coste, Horas, etc.).
+- Las funciones de estilo están en `funciones.py` (como `formatea_euro`, `formatea_fecha`, etc.).
+- El documento Word generado incluye encabezados, tablas, recuadros y saltos de página.
+- Si lo adaptas a producción, asegúrate de parametrizar los nombres de entrada/salida y la carga de plantillas.
+
+---
+
+## 📃 Licencia
+
+MIT License. Puedes usarlo, modificarlo y distribuirlo libremente.
