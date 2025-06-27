@@ -1,84 +1,96 @@
 
-# 🧾 Generador automático de fichas Word desde Excel
 
-Este proyecto genera automáticamente un documento Word combinando plantillas `.docx` con datos de personal contenidos en un archivo Excel (`Excel_Personal_2.1.xlsx`). Es útil para informes técnicos, certificaciones y memorias justificativas de proyectos de I+D.
+# 🧾 API Backend para generación de fichas Word 2.1 y 2.2 desde Excel
 
----
-
-## 📁 Estructura del proyecto
-
-```
-📦 proyecto/
-├── 📄 script.py
-├── 📄 funciones.py
-├── 📄 Excel_Personal_2.1.xlsx
-├── 📄 plantilla_base.docx
-├── 📄 Ficha_Ampliacion_Aptdo_2_1_nombre_cliente.docx
-└── 📂 output/
-```
+Este backend permite generar documentos Word para las fichas de ampliación 2.1 (personal) y 2.2 (entidades y facturas) a partir de archivos Excel. Está preparado para conectarse fácilmente con un frontend en React mediante peticiones HTTP.
 
 ---
 
-## 🛠 Requisitos
+## ⚙️ Endpoints disponibles
 
-- Python 3.8 o superior
-- Google Colab (opcional)
-- Librerías necesarias:
+### ▶️ `/generar-ficha-21/`
+
+- **Método**: `POST`
+- **Input**: Excel llamado `Excel_Personal_2.1.xlsx` como `multipart/form-data` (campo `excel_file`)
+- **Output**: Fichero Word `.docx` con todas las fichas de personal.
+
+### ▶️ `/generar-ficha-22/`
+
+- **Método**: `POST`
+- **Input**: Dos archivos Excel:
+  - `Excel_Colaboraciones_2.2.xlsx` (campo `colaboraciones`)
+  - `Excel_Facturas_2.2.xlsx` (campo `facturas`)
+- **Output**: Fichero Word `.docx` con las fichas por entidad y sus costes.
+
+---
+
+## 📁 Estructura recomendada del proyecto
+
+```
+/fichas-backend/
+├── app.py                 # Servidor FastAPI
+├── generar_fichas.py      # Funciones para generar documentos Word
+├── plantillas/
+│   ├── 2.1.docx           # Plantilla base ficha 2.1
+│   └── 2.2.docx           # Plantilla base ficha 2.2
+├── output/                # Carpeta de salida para documentos
+└── ejemplos/
+    ├── Excel_Personal_2.1.xlsx
+    ├── Excel_Colaboraciones_2.2.xlsx
+    └── Excel_Facturas_2.2.xlsx
+```
+
+---
+
+## 🔄 Ejemplo de integración con React
+
+```js
+// Subida del Excel 2.1
+const formData = new FormData();
+formData.append("excel_file", fileInput.files[0]);
+
+fetch("http://localhost:8000/generar-ficha-21/", {
+  method: "POST",
+  body: formData
+})
+  .then(res => res.blob())
+  .then(blob => {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "Ficha_Ampliacion_2_1.docx";
+    a.click();
+  });
+```
+
+---
+
+## 📦 Instalación
 
 ```bash
-pip install pandas openpyxl python-docx
+pip install fastapi uvicorn python-docx pandas openpyxl
 ```
 
 ---
 
-## 🔧 Cómo ejecutar el script
+## ▶️ Cómo ejecutar el backend
 
-1. Asegúrate de que el archivo `Excel_Personal_2.1.xlsx` esté en el mismo directorio o en la ruta indicada.
-2. Asegúrate de tener cargada la plantilla Word llamada `2.1.docx` o similar.
-3. Ejecuta el script `script.py`, ya sea en local o en Google Colab.
-4. Se generará automáticamente el documento Word con todas las fichas combinadas.
-
----
-
-## 📌 Notas importantes
-
-- Las fechas se formatean automáticamente en el estilo `dd/mm/yyyy`.
-- Los valores numéricos en euros se formatean con punto de miles y coma decimal: `1.234,56 €`.
-- El campo **Coste horario** muestra el símbolo `€/h` en lugar de `€` para mayor claridad.
-- La sección de **"Actividad 3"** se rellena únicamente si hay contenido en las celdas correspondientes.
-- Puedes subir tu Excel a Google Drive y montar temporalmente tu unidad si trabajas desde Google Colab.
+```bash
+uvicorn app:app --reload
+```
 
 ---
 
-## ☁️ Cómo usarlo como backend en una plataforma
+## ✍️ Notas importantes
 
-- Extrae la función principal de generación de fichas a un archivo como `generar_fichas.py`.
-- Usa la librería `tempfile` para guardar los archivos `.docx` de forma temporal.
-- Asegúrate de que el frontend envíe correctamente el archivo `.xlsx`.
-- Devuelve el archivo generado en bytes o como descarga desde el backend.
-- Usa frameworks como **Flask** o **FastAPI** para hacer accesible el servicio desde HTTP.
-
----
-
-## 📤 Compartir el proyecto
-
-Para subirlo a GitHub:
-
-1. Crea un repositorio con `git init`.
-2. Añade el archivo `README.md` con estas instrucciones.
-3. Sube todos los archivos relevantes, excepto ficheros temporales.
-
----
-
-## 👨‍💻 Indicaciones para otros programadores
-
-- El script debe ejecutarse con un archivo Excel estructurado según el modelo (Nombre, Apellidos, Coste, Horas, etc.).
-- Las funciones de estilo están en `funciones.py` (como `formatea_euro`, `formatea_fecha`, etc.).
-- El documento Word generado incluye encabezados, tablas, recuadros y saltos de página.
-- Si lo adaptas a producción, asegúrate de parametrizar los nombres de entrada/salida y la carga de plantillas.
+- Las plantillas `.docx` deben estar en la carpeta `plantillas/`.
+- La salida se guarda automáticamente en `output/`.
+- Las funciones están diseñadas para mantener el formato de tablas y estilos definidos en Word.
+- La ficha 2.1 puede incluir campos personalizados como actividad 3 y 4.
+- La ficha 2.2 genera tablas con desglose de facturas asociadas por entidad.
 
 ---
 
 ## 📃 Licencia
 
-MIT License. Puedes usarlo, modificarlo y distribuirlo libremente.
+MIT License – puedes usar, adaptar y distribuir libremente este backend.
